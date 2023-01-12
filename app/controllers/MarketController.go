@@ -56,20 +56,21 @@ func (m *Market) Market15m(instId string, bar string, time string) {
 		resRate := helpers.Decimal(rate*100, "2")
 
 		sendRate := fmt.Sprintf("%.2f", resRate)
+
 		// 跌幅
 		if resRate < 0 {
 			if resRate*-1 > m.Rise {
 				email.SentEmail(receive, sendRate, instId)
 				fmt.Printf("跌幅：%v \n", resRate)
+				break
 			}
-			break
 		} else {
 			// 涨幅
 			if resRate >= m.Rise {
 				email.SentEmail(receive, sendRate, instId)
 				fmt.Printf("涨幅：%v \n", resRate)
+				break
 			}
-			break
 		}
 	}
 

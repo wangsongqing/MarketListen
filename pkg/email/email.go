@@ -19,7 +19,7 @@ func SentEmail(receive string, wave string, coin string) {
 	port, _ := strconv.Atoi(config.Env("EMAIL_QQ_PORT", "").(string))
 
 	body := "<h4>币种:" + coin + "</h4>"
-	body += "<h4>十五分钟线波动:" + wave + "</h4>"
+	body += "<h4>十五分钟线波动:" + wave + "%</h4>"
 
 	//发送人
 	m.SetHeader("From", sendEmail)

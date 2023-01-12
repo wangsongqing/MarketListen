@@ -10,6 +10,9 @@ import (
 // 可以根据参数名称--传参
 func init() {
 	rootCmd.AddCommand(marketCmd)
+	marketCmd.Flags().StringP("instId", "i", "LTC-USD", "") // 币种
+	marketCmd.Flags().StringP("bar", "b", "15m", "")        // K线时间段
+	marketCmd.Flags().Float64P("wave", "w", 1, "")          // 涨跌幅通知阀值
 }
 
 // 运行项目命令 go run main.go market
@@ -18,14 +21,15 @@ var marketCmd = &cobra.Command{
 	Use:     "market",
 	Short:   "",
 	Long:    ``,
-	Example: "go run main.go market",
+	Example: "go run main.go market -i DOGE-USD -b 15m -w 1",
 	Run: func(cmd *cobra.Command, args []string) {
 		market := controllers.Market{}
-		market.Rise = 1 // 涨跌幅度通知阀值
+		wave, _ := cmd.Flags().GetFloat64("wave")
+		market.Rise = wave // 涨跌幅度通知阀值
 		market.BaseUrl = "https://www.okx.com/api/v5/market/index-candles"
 
-		bar := "15m"
-		instId := "LTC-USD"
+		bar, _ := cmd.Flags().GetString("bar")
+		instId, _ := cmd.Flags().GetString("instId")
 
 		afterTime := (time.GetNowTime() - 1800) * 1000
 

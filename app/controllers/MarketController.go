@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"MarketListen/pkg/config"
+	"MarketListen/pkg/email"
 	"MarketListen/pkg/helpers"
 	"MarketListen/pkg/logger"
 	"context"
@@ -42,7 +44,8 @@ func (m *Market) Market15m(instId string, bar string, time string) {
 		logger.NewGormLogger().Info(context.TODO(), "数据异常："+helpers.FmtStrFromInterface(data.Msg)) // 写入日志
 	}
 
-	//var flag bool
+	receive := helpers.FmtStrFromInterface(config.Env("EMAIL_QQ_RECEIVE", ""))
+
 	for _, v := range data.Data {
 		//fmt.Printf("ts:%v,o:%v,h:%v,l:%v,c:%v,confirm:%v \n", v[0], v[1], v[2], v[3], v[4], v[5])
 		// (开盘价格 - 收盘价格) / 开盘价格
@@ -52,16 +55,21 @@ func (m *Market) Market15m(instId string, bar string, time string) {
 		rate := (open - ceil) / open
 		resRate := helpers.Decimal(rate*100, "2")
 
+		sendRate := fmt.Sprintf("%.2f", resRate)
 		// 跌幅
 		if resRate < 0 {
 			if resRate*-1 > m.Rise {
+				email.SentEmail(receive, sendRate, instId)
 				fmt.Printf("跌幅：%v \n", resRate)
 			}
+			break
 		} else {
 			// 涨幅
 			if resRate >= m.Rise {
+				email.SentEmail(receive, sendRate, instId)
 				fmt.Printf("涨幅：%v \n", resRate)
 			}
+			break
 		}
 	}
 

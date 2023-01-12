@@ -21,7 +21,7 @@ var marketCmd = &cobra.Command{
 	Example: "go run main.go market",
 	Run: func(cmd *cobra.Command, args []string) {
 		market := controllers.Market{}
-		market.Rise = 0.8 // 涨跌幅度通知阀值
+		market.Rise = 1 // 涨跌幅度通知阀值
 		market.BaseUrl = "https://www.okx.com/api/v5/market/index-candles"
 
 		bar := "15m"

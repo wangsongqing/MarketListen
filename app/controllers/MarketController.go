@@ -61,14 +61,14 @@ func (m *Market) Market15m(instId string, bar string, time string) {
 		if resRate < 0 {
 			if resRate*-1 > m.Rise {
 				email.SentEmail(receive, sendRate, instId)
-				fmt.Printf("跌幅：%v \n", resRate)
+				fmt.Printf("币种:%v,跌幅：%v \n", instId, resRate)
 				break
 			}
 		} else {
 			// 涨幅
 			if resRate >= m.Rise {
 				email.SentEmail(receive, sendRate, instId)
-				fmt.Printf("涨幅：%v \n", resRate)
+				fmt.Printf("币种:%v,涨幅：%v \n", instId, resRate)
 				break
 			}
 		}

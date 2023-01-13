@@ -2,7 +2,9 @@ package cmd
 
 import (
 	"MarketListen/app/controllers"
+	"MarketListen/pkg/logger"
 	"MarketListen/pkg/time"
+	"context"
 	"github.com/spf13/cobra"
 	"strconv"
 )
@@ -22,6 +24,7 @@ var marketsCmd = &cobra.Command{
 	Long:    ``,
 	Example: "go run main.go markets -b 15m -w 2",
 	Run: func(cmd *cobra.Command, args []string) {
+		logger.NewGormLogger().Info(context.TODO(), "执行时间:"+time.NowTimeDate())
 		markets := controllers.Markets{}
 		wave, _ := cmd.Flags().GetFloat64("wave")
 		markets.Rise = wave // 涨跌幅度通知阀值

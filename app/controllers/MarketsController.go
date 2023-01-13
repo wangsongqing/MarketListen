@@ -3,7 +3,6 @@ package controllers
 import (
 	"MarketListen/pkg/logger"
 	"encoding/json"
-	"fmt"
 	"github.com/parnurzeal/gorequest"
 	"strings"
 	"time"
@@ -56,11 +55,11 @@ func (m *Markets) SendPush(bar string, times string) {
 	data := ResponseDatas{}
 	json.Unmarshal(body, &data)
 
-	for k, v := range data.Data {
+	for _, v := range data.Data {
 		if ok := strings.Contains(v.InstID, "USDT"); !ok {
 			continue
 		}
-		fmt.Printf("k:%v,v:%v \n", k, v.InstID)
+		//fmt.Printf("k:%v,v:%v \n", k, v.InstID)
 		market.Market15m(v.InstID, bar, times)
 
 		time.Sleep(time.Second)

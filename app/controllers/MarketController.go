@@ -47,12 +47,14 @@ func (m *Market) Market15m(instId string, bar string, time string) {
 	receive := helpers.FmtStrFromInterface(config.Env("EMAIL_QQ_RECEIVE", ""))
 
 	for _, v := range data.Data {
-		//fmt.Printf("ts:%v,o:%v,h:%v,l:%v,c:%v,confirm:%v \n", v[0], v[1], v[2], v[3], v[4], v[5])
-		// (开盘价格 - 收盘价格) / 开盘价格
+		// fmt.Printf("ts:%v,o:%v,h:%v,l:%v,c:%v,confirm:%v \n", v[0], v[1], v[2], v[3], v[4], v[5])
+		// (收盘价格 - 开盘价格) / 开盘价格  // 涨跌幅
 		open, _ := strconv.ParseFloat(v[1], 0)
 		ceil, _ := strconv.ParseFloat(v[4], 0)
 
-		rate := (open - ceil) / open
+		// fmt.Printf("open:%v,ceil:%v \n", v[1], v[4])
+
+		rate := (ceil - open) / open
 		resRate := helpers.Decimal(rate*100, "2")
 
 		sendRate := fmt.Sprintf("%.2f", resRate)

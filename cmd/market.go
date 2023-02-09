@@ -21,7 +21,7 @@ var marketCmd = &cobra.Command{
 	Use:     "market",
 	Short:   "",
 	Long:    ``,
-	Example: "go run main.go market -i DOGE-USD -b 15m -w 1",
+	Example: "go run main.go market -i OKB-USD -b 15m -w 2",
 	Run: func(cmd *cobra.Command, args []string) {
 		market := controllers.Market{}
 		wave, _ := cmd.Flags().GetFloat64("wave")

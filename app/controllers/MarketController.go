@@ -10,6 +10,8 @@ import (
 	"fmt"
 	"github.com/parnurzeal/gorequest"
 	"strconv"
+	"strings"
+	times "time"
 )
 
 type Market struct {
@@ -45,7 +47,7 @@ func (m *Market) Market15m(instId string, bar string, time string) {
 	}
 
 	receive := helpers.FmtStrFromInterface(config.Env("EMAIL_QQ_RECEIVE", ""))
-
+	splitReceive := strings.Split(receive, ",")
 	for _, v := range data.Data {
 		// fmt.Printf("ts:%v,o:%v,h:%v,l:%v,c:%v,confirm:%v \n", v[0], v[1], v[2], v[3], v[4], v[5])
 		// (收盘价格 - 开盘价格) / 开盘价格  // 涨跌幅
@@ -62,19 +64,30 @@ func (m *Market) Market15m(instId string, bar string, time string) {
 		// 跌幅
 		if resRate < 0 {
 			if resRate*-1 > m.Rise {
-				email.SentEmail(receive, sendRate, instId)
-				fmt.Printf("币种:%v,跌幅：%v \n", instId, resRate)
+				sendEmails(sendRate, instId, splitReceive)
+				fmt.Printf("币种:%v,跌幅：%v,开盘价:%v,收盘价:%v \n", instId, resRate, open, ceil)
 				break
 			}
 		} else {
 			// 涨幅
 			if resRate >= m.Rise {
-				email.SentEmail(receive, sendRate, instId)
-				fmt.Printf("币种:%v,涨幅：%v \n", instId, resRate)
+				sendEmails(sendRate, instId, splitReceive)
+				fmt.Printf("币种:%v,涨幅：%v,开盘价:%v,收盘价:%v \n", instId, resRate, open, ceil)
 				break
 			}
 		}
 	}
 
 	fmt.Println("Done")
+}
+
+// 批量发送邮件
+func sendEmails(sendRate string, instId string, splitReceive []string) {
+	for _, sendEmail := range splitReceive {
+		if len(sendEmail) == 0 {
+			continue
+		}
+		email.SentEmail(sendEmail, sendRate, instId)
+		times.Sleep(times.Second)
+	}
 }

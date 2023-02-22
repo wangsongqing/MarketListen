@@ -81,7 +81,7 @@ func (m *Market) Market15m(instId string, bar string, time string) {
 	fmt.Println("Done")
 }
 
-// 批量发送邮件
+// 批量发送邮件，多个邮箱都可以
 func sendEmails(sendRate string, instId string, splitReceive []string) {
 	for _, sendEmail := range splitReceive {
 		if len(sendEmail) == 0 {
